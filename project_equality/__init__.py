@@ -1,0 +1,1 @@
+"""Project Equality: lightweight ethical-impact review tools."""
