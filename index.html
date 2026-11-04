@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Project Equality — Impact Review</title>
+<style>
+:root{color-scheme:dark;--bg:#101827;--panel:#192538;--text:#edf2f7;--muted:#aab7c8;--line:#34445b;--accent:#80c7c0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{width:min(760px,100%);margin:auto;padding:24px 16px 56px}header{padding:20px 0 12px}h1{font-size:2rem;line-height:1.15;margin:0 0 10px}h2{font-size:1.25rem;margin:26px 0 10px}p{color:var(--muted)}.principle{font-size:1.12rem;color:var(--text);border-left:4px solid var(--accent);padding:10px 14px;background:var(--panel)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+label.field{display:block;margin:12px 0 6px;color:var(--text)}input[type=text],textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0d1725;color:var(--text);font:inherit}
+textarea{min-height:90px;resize:vertical}.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;color:var(--text)}input[type=checkbox]{width:19px;height:19px;margin-top:3px;accent-color:var(--accent)}
+button{border:0;border-radius:9px;padding:12px 16px;margin:8px 8px 0 0;background:var(--accent);color:#10202a;font-weight:700;font-size:1rem}button.secondary{background:#34445b;color:var(--text)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;border-radius:10px;color:var(--text)}a{color:var(--accent)}small{color:var(--muted)}
+</style>
+</head>
+<body><main>
+<header><h1>Project Equality</h1><p class="principle"><strong>Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.</strong></p><p>A simple reflection checklist for identifying questions and safeguards before deploying a technology or AI proposal.</p></header>
+<section>
+<h2>Proposal</h2>
+<label class="field" for="name">Proposal or system name</label><input id="name" type="text" placeholder="Example: AI-assisted application screening">
+<label class="field" for="purpose">Purpose and intended use</label><textarea id="purpose" placeholder="What will it do, and who may be affected?"></textarea>
+</section>
+<section><h2>Impact and safeguards</h2>
+<div id="checks">
+<label class="check"><input type="checkbox" data-key="impacts_people"> This proposal affects people or their opportunities.</label>
+<label class="check"><input type="checkbox" data-key="high_impact"> It may affect health, safety, rights, employment, education, finances, or access to essential services.</label>
+<label class="check"><input type="checkbox" data-key="sensitive_data"> It uses personal or sensitive data.</label>
+<label class="check"><input type="checkbox" data-key="no_appeal"> There is no clear appeal or human review process.</label>
+<label class="check"><input type="checkbox" data-key="no_accountability"> No accountable human or institution has been identified.</label>
+<label class="check"><input type="checkbox" data-key="no_explanation"> Affected people may not receive an understandable explanation.</label>
+<label class="check"><input type="checkbox" data-key="bias_risk"> There may be discrimination or unequal impact.</label>
+<label class="check"><input type="checkbox" data-key="coercion_risk"> It may manipulate, pressure, or coerce people.</label>
+<label class="check"><input type="checkbox" data-key="power_concentration"> It may concentrate power without adequate oversight.</label>
+</div>
+<label class="field" for="evidence">Evidence, uncertainties, and affected groups</label><textarea id="evidence" placeholder="What do you know? What remains uncertain?"></textarea>
+<label class="field" for="safeguards">Safeguards already planned</label><textarea id="safeguards" placeholder="Human review, access controls, testing, appeals, monitoring..."></textarea>
+<button id="review">Generate review notes</button><button class="secondary" id="copy">Copy notes</button><button class="secondary" id="clear">Clear</button>
+<pre id="output" aria-live="polite">Your review notes will appear here.</pre>
+</section>
+<section><h2>Important limitation</h2><small>This is a self-assessment prompt, not an audit, certification, legal opinion, or guarantee. It cannot inspect a system or verify answers. High-impact proposals need qualified human review and appropriate independent scrutiny. Do not enter confidential or sensitive personal information.</small></section>
+<p><a href="CONSTITUTION.md">Draft Constitution</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="https://github.com/heirl/project-equality">GitHub repository</a></p>
+</main>
+<script>
+const prompts={impacts_people:"Identify affected people and consult them.",high_impact:"Require proportionate expert review, testing, monitoring, and documented approval.",sensitive_data:"Minimize data, define lawful purpose and retention, and apply strong access controls.",no_appeal:"Create an accessible appeal path and meaningful human review.",no_accountability:"Name an accountable owner and decision-making institution.",no_explanation:"Provide understandable notices and explanations appropriate to the use.",bias_risk:"Test outcomes across relevant groups and mitigate unjustified disparities.",coercion_risk:"Assess consent, user autonomy, manipulation, and alternatives.",power_concentration:"Add oversight, limits, transparency, and checks against unilateral control."};
+let latest="";
+document.getElementById("review").addEventListener("click",()=>{
+ const name=document.getElementById("name").value.trim()||"Unnamed proposal";
+ const purpose=document.getElementById("purpose").value.trim()||"Not supplied";
+ const flagged=[...document.querySelectorAll("[data-key]:checked")].map(x=>x.dataset.key);
+ const lines=["PROJECT EQUALITY — IMPACT REVIEW","Proposal: "+name,"Purpose: "+purpose,"","AREAS TO REVIEW"];
+ if(!flagged.length) lines.push("No risk flags selected. This does not establish that the proposal is safe.");
+ else flagged.forEach(k=>lines.push("- "+prompts[k]));
+ lines.push("","EVIDENCE / UNCERTAINTIES",document.getElementById("evidence").value.trim()||"Not supplied","", "EXISTING SAFEGUARDS",document.getElementById("safeguards").value.trim()||"Not supplied","","LIMITATION: Self-assessment only; not an audit, certification, legal opinion, or guarantee. Human accountability remains essential.");
+ latest=lines.join("\n");document.getElementById("output").textContent=latest;
+});
+document.getElementById("copy").addEventListener("click",async()=>{if(!latest){document.getElementById("review").click()}try{await navigator.clipboard.writeText(latest);document.getElementById("copy").textContent="Copied"}catch(e){document.getElementById("output").textContent=latest+"\n\nSelect and copy the notes manually."}});
+document.getElementById("clear").addEventListener("click",()=>{document.querySelectorAll("input[type=text],textarea").forEach(x=>x.value="");document.querySelectorAll("[data-key]").forEach(x=>x.checked=false);latest="";document.getElementById("output").textContent="Your review notes will appear here.";document.getElementById("copy").textContent="Copy notes"});
+</script></body></html>
