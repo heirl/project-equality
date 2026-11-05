@@ -22,6 +22,8 @@ The community identifies concerns; research examines evidence; technology tests 
 - [Research Agenda](RESEARCH_AGENDA.md)
 - [Governance and Participation](GOVERNANCE.md)
 - [AI Application Human Impact Assessment Tool](index.html)
+- [AI Assessment Engine Setup](AI_ENGINE_SETUP.md)
+- [Secure Assessment API Worker](assessment-api/worker.js)
 - [AI Application Impact Assessment Framework](AI_APPLICATION_IMPACT_FRAMEWORK.md)
 - [Worked Test Case: Autonomous Military Agent](test-cases/AUTONOMOUS_MILITARY_AGENT.md)
 - [Cross-Domain AI Test Suite](test-cases/CROSS_DOMAIN_AI_TEST_SUITE.md)
