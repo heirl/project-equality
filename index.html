@@ -58,4 +58,5 @@ document.getElementById("review").addEventListener("click",()=>{
 });
 document.getElementById("copy").addEventListener("click",async()=>{if(!latest){document.getElementById("review").click()}try{await navigator.clipboard.writeText(latest);document.getElementById("copy").textContent="Copied"}catch(e){document.getElementById("output").textContent=latest+"\n\nSelect and copy the notes manually."}});
 document.getElementById("clear").addEventListener("click",()=>{document.querySelectorAll("input[type=text],textarea").forEach(x=>x.value="");document.querySelectorAll("[data-key]").forEach(x=>x.checked=false);latest="";document.getElementById("output").textContent="Your review notes will appear here.";document.getElementById("copy").textContent="Copy notes"});
-</script></body></html>
+</script>  <!-- GitHub Pages redeploy trigger -->
+</body></html>
