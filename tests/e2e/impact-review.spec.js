@@ -3,6 +3,7 @@ const { test, expect } = require("@playwright/test");
 test.beforeEach(async ({ page }) => {
   await page.goto("./");
   await expect(page.getByRole("heading", { name: "Project Equality" })).toBeVisible();
+  await page.getByRole("button", { name: "Manual assessment" }).click();
 });
 
 test("loads the AI application human impact assessment", async ({ page }) => {
@@ -62,4 +63,14 @@ test("copies the generated human impact report", async ({ page, context }) => {
   const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
   expect(clipboardText).toContain("Clipboard test");
   expect(clipboardText).toContain("PROJECT EQUALITY — AI APPLICATION HUMAN IMPACT REPORT");
+});
+
+test("automatically screens a user-provided AI idea", async ({ page }) => {
+  await page.getByRole("button", { name: "Automated idea screening" }).click();
+  await page.getByLabel("Describe your AI application idea").fill("An autonomous AI agent screens job applicants and automatically rejects candidates using facial recognition.");
+  await page.getByRole("button", { name: "Assess my idea" }).click();
+  await expect(page.locator("#output")).toContainText("AUTOMATED IDEA SCREENING");
+  await expect(page.locator("#output")).toContainText("Rights, fairness, and discrimination");
+  await expect(page.locator("#output")).toContainText("Privacy and surveillance");
+  await expect(page.locator("#output")).toContainText("LIMITATIONS");
 });
