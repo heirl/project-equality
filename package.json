@@ -1,0 +1,12 @@
+{
+  "name": "project-equality",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Browser tests for the Project Equality GitHub Pages site",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}
