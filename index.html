@@ -23,10 +23,10 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;
 <p>Start with a quick automated screening from your idea, or complete the detailed manual assessment below. You can use both.</p>
 <div class="modebar"><button type="button" id="autoMode" aria-pressed="true">Automated idea screening</button><button type="button" class="secondary" id="manualMode" aria-pressed="false">Manual assessment</button></div>
 <div id="autoPanel">
-<label class="field" for="ideaInput">Describe your AI application idea</label>
+<label class="field" for="apiUrl">AI assessment service URL (required for AI-powered analysis)</label><input id="apiUrl" type="url" placeholder="https://your-worker.workers.dev"><label class="field" for="ideaInput">Describe your AI application idea</label>
 <textarea id="ideaInput" placeholder="Example: An AI agent that screens job applicants, ranks candidates, and automatically rejects low-scoring applications."></textarea>
 <button type="button" id="runAuto">Assess my idea</button>
-<p class="note">Automated screening uses transparent, locally run rules and keyword patterns. It is an initial triage aid—not a generative AI expert, factual verification, legal review, or final risk decision. It may miss context and should be followed by manual assessment.</p>
+<p class="note">AI-powered mode sends your idea to the Project Equality assessment service you configure above. The service URL is not a secret; its API key must remain on the server. If no service is configured, the site will explain how to connect one. AI output is preliminary and requires human review.</p>
 </div>
 </section>
 <section id="manualAssessment">
@@ -98,7 +98,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;
 <label class="field" for="monitoring">How will impacts be monitored after deployment?</label><textarea id="monitoring" placeholder="Metrics, feedback channels, review frequency, incident escalation, rollback criteria..."></textarea>
 <div class="note">The report separates selected concerns from verified findings. Empty or unknown answers are evidence gaps, not proof of safety.</div>
 <button id="review">Generate human impact report</button><button class="secondary" id="copy">Copy report</button><button class="secondary" id="clear">Clear form</button>
-<pre id="output" aria-live="polite">Your AI application human impact report will appear here.</pre>
+<pre id="output" aria-live="polite">Your AI application human impact report will appear here.</pre><div id="riskGraph" aria-live="polite"></div>
 </section>
 </section><section><h2>Important limitations</h2><small>This is a structured self-assessment aid. It does not inspect models, datasets, source code, security controls, or deployment conditions; independently verify answers; calculate a scientifically validated risk score; or provide legal advice, audit, certification, or a guarantee. It cannot replace domain experts, affected-community consultation, independent evaluation, applicable law, or ongoing human accountability. A high-impact or critical-risk use needs deeper, context-specific assessment before deployment and throughout its lifecycle. Do not enter confidential or sensitive personal information.</small></section>
 <p><a href="AI_APPLICATION_IMPACT_FRAMEWORK.md">Framework and methodology</a> · <a href="CONSTITUTION.md">Draft Constitution</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="https://github.com/heirl/project-equality">GitHub repository</a></p>
@@ -128,28 +128,41 @@ document.getElementById("clear").addEventListener("click",()=>{document.querySel
 const autoBtn=document.getElementById("autoMode"),manualBtn=document.getElementById("manualMode"),autoPanel=document.getElementById("autoPanel"),manualSection=document.getElementById("manualAssessment");
 function setMode(mode){const isAuto=mode==="auto";autoBtn.setAttribute("aria-pressed",String(isAuto));manualBtn.setAttribute("aria-pressed",String(!isAuto));autoPanel.classList.toggle("hidden",!isAuto);manualSection.classList.toggle("hidden",isAuto);}
 autoBtn.addEventListener("click",()=>setMode("auto"));manualBtn.addEventListener("click",()=>setMode("manual"));
-document.getElementById("runAuto").addEventListener("click",()=>{
+
+function renderAiAssessment(data, meta) {
+ const a=data.assessment;
+ const lines=["PROJECT EQUALITY — AI-POWERED HUMAN IMPACT ASSESSMENT","Generated: "+(meta.generated_at||new Date().toISOString()),"Model: "+(meta.model||"Configured AI model"),"","APPLICATION SUMMARY",a.application_summary,"","INTENDED BENEFITS",...(a.intended_benefits||[]).map(x=>"- "+x),"","AFFECTED GROUPS",...(a.affected_groups||[]).map(x=>"- "+x),"","POTENTIAL HARM SCENARIOS",...(a.harm_scenarios||[]).map(x=>"- "+x),"","RISK DIMENSIONS"];
+ (a.risk_dimensions||[]).forEach(r=>lines.push("- "+r.dimension+": "+r.severity+"/5 severity. "+r.rationale+" Uncertainty: "+r.uncertainty));
+ lines.push("","REVIEW PRIORITY",a.review_priority,a.priority_reason,"","LIKELIHOOD",a.likelihood_assessment,"","EVIDENCE GAPS",...(a.evidence_gaps||[]).map(x=>"- "+x),"","RECOMMENDED SAFEGUARDS",...(a.safeguards||[]).map(x=>"- "+x),"","LIMITATIONS",...(a.limitations||[]).map(x=>"- "+x),"","This is AI-generated preliminary screening, not an audit, certification, legal opinion, or safety guarantee. Severity is not likelihood. Human review is required.");
+ latest=lines.join("\n");document.getElementById("output").textContent=latest;
+ const graph=document.getElementById("riskGraph");graph.replaceChildren();
+ const heading=document.createElement("h3");heading.textContent="Potential impact severity by dimension (1–5)";graph.appendChild(heading);
+ (a.risk_dimensions||[]).forEach(r=>{
+  const wrap=document.createElement("div");wrap.style.margin="10px 0";
+  const label=document.createElement("div");label.textContent=r.dimension+" — "+r.severity+"/5";wrap.appendChild(label);
+  const track=document.createElement("div");track.style.cssText="height:12px;background:#34445b;border-radius:8px;overflow:hidden";
+  const bar=document.createElement("div");bar.style.cssText="height:100%;width:"+Math.max(0,Math.min(5,Number(r.severity)||0))*20+"%;background:"+(r.severity>=5?"#e36b61":r.severity>=4?"#e6a44f":r.severity>=3?"#d5c66b":"#80c7c0")+";border-radius:8px";
+  track.appendChild(bar);wrap.appendChild(track);graph.appendChild(wrap);
+ });
+ const note=document.createElement("p");note.className="note";note.textContent="Severity ratings are qualitative prompts for investigation, not probabilities or validated scores. Do not average them.";graph.appendChild(note);
+}
+document.getElementById("runAuto").addEventListener("click",async()=>{
  const idea=document.getElementById("ideaInput").value.trim();
- if(!idea){document.getElementById("output").textContent="Please describe your AI application idea first.";return;}
- const text=idea.toLowerCase();
- const rules=[
-  {name:"Physical safety / health",re:/\b(health|medical|patient|diagnos|treatment|surgery|drug|vehicle|driving|transport|robot|weapon|military|lethal|safety|emergency)\b/,severity:5,reason:"Could affect physical safety or health; errors may cause serious injury or death."},
-  {name:"Rights, fairness, and discrimination",re:/\b(hir(e|ing)|recruit|job|applicant|candidate|school|student|grade|admission|credit|loan|insurance|benefit|polic|judge|criminal|score|rank|reject|eligib)\b/,severity:5,reason:"Could influence access to employment, education, finance, public services, or other opportunities."},
-  {name:"Privacy and surveillance",re:/\b(personal data|private|privacy|biometric|face recognition|facial|surveillance|monitor|track|location|camera|voiceprint)\b/,severity:4,reason:"May collect, infer, or expose sensitive information or enable monitoring."},
-  {name:"Human control and autonomy",re:/\b(autonomous|agent|automatically|automatic|without human|no human|decide|decision|execute|control|approve|reject)\b/,severity:4,reason:"Automation may reduce meaningful human oversight or make consequential actions difficult to reverse."},
-  {name:"Manipulation and psychological wellbeing",re:/\b(companion|therapy|mental|emotion|persuad|influence|addict|child|social media|recommend|personaliz)\b/,severity:4,reason:"Could influence beliefs, behaviour, emotional wellbeing, or vulnerable users."},
-  {name:"Cybersecurity and misuse",re:/\b(agent|api|cyber|security|hack|password|credential|critical infrastructure|code|computer|network|autonomous)\b/,severity:4,reason:"Could be misused, compromised, or cause unintended actions through connected systems."},
-  {name:"Employment and economic effects",re:/\b(job|worker|employee|workforce|replace|automate|salary|income|business|productivity)\b/,severity:3,reason:"May change jobs, working conditions, livelihoods, or distribution of economic benefits."},
-  {name:"Power concentration and dependence",re:/\b(platform|government|mass|population|large scale|essential|infrastructure|monopoly|depend|surveillance)\b/,severity:3,reason:"Could create dependency or concentrate decision-making power."}
- ];
- const hits=rules.filter(r=>r.re.test(text));
- const max=hits.reduce((m,r)=>Math.max(m,r.severity),0);
- const priority=max>=5?"High-impact / critical-risk expert review":max>=4?"Enhanced review; assess context and safeguards":"Baseline review; clarify purpose, affected people, and foreseeable harms";
- const lines=["PROJECT EQUALITY — AUTOMATED IDEA SCREENING","Generated: "+new Date().toISOString(),"","IDEA PROVIDED",idea,"","POTENTIAL IMPACT AREAS FLAGGED"];
- if(hits.length){hits.forEach(h=>lines.push("- "+h.name+" (potential severity "+h.severity+"/5): "+h.reason));}
- else lines.push("- No predefined risk pattern matched. This does not mean the idea is low-risk or safe; manual review is required.");
- lines.push("","INITIAL REVIEW PRIORITY",priority,"","IMPORTANT QUESTIONS TO VERIFY","- Who benefits, and who may be harmed—including non-users?","- What decisions or actions can the system take, and how autonomous is it?","- What is the worst credible harm, how likely is it, how many people could be affected, and can it be reversed?","- What evidence supports the claimed benefits and performance?","- Can affected people understand, challenge, and obtain remedy for consequential outcomes?","- Who is accountable, and what happens when the system fails or is compromised?","- What independent testing and ongoing monitoring are required?","","LIMITATIONS","This is a transparent keyword-based preliminary screening, not a full AI model assessment. It does not understand all context, verify claims, inspect code or data, estimate likelihood, or provide legal advice. Severity flags are conservative prompts for investigation, not measured risk scores. Complete the manual assessment and obtain appropriate expert review before consequential deployment.");
- latest=lines.join("\n");document.getElementById("output").textContent=latest;setMode("auto");
+ const endpoint=document.getElementById("apiUrl").value.trim().replace(/\/+$/,"");
+ const output=document.getElementById("output"),button=document.getElementById("runAuto");
+ if(idea.length<20){output.textContent="Please describe your AI application in at least 20 characters.";return;}
+ if(!endpoint){output.textContent="AI assessment service is not connected yet. Deploy the secure backend using AI_ENGINE_SETUP.md, then paste its Worker URL above. No API key belongs in this website.";return;}
+ let parsed;try{const u=new URL(endpoint);if(u.protocol!=="https:")throw new Error();parsed=u;}catch{output.textContent="Enter a valid HTTPS assessment service URL.";return;}
+ button.disabled=true;button.textContent="Assessing…";output.textContent="Sending your idea to the secure assessment service…";document.getElementById("riskGraph").replaceChildren();
+ try{
+  const response=await fetch(endpoint+"/api/assess",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idea})});
+  const result=await response.json();
+  if(!response.ok)throw new Error(result.error||"Assessment service error (HTTP "+response.status+").");
+  if(!result.assessment||!Array.isArray(result.assessment.risk_dimensions))throw new Error("The service returned an unexpected assessment format.");
+  renderAiAssessment(result,result.meta||{});
+ }catch(error){output.textContent="AI assessment could not be completed. "+error.message+"\n\nCheck the Worker URL, deployment status, allowed website origin, API key secret, and provider billing. The manual assessment remains available.";}
+ finally{button.disabled=false;button.textContent="Assess my idea";}
 });
+
 </script>
 </body></html>
