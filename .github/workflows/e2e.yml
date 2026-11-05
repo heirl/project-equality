@@ -1,0 +1,59 @@
+name: Deployed site browser tests
+
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-equality-e2e
+  cancel-in-progress: true
+
+jobs:
+  browser-tests:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for GitHub Pages to serve the deployment
+        run: |
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error https://heirl.github.io/project-equality/ -o /tmp/project-equality.html; then
+              break
+            fi
+            echo "Site not ready yet; retrying..."
+            sleep 10
+          done
+          grep -q "Project Equality" /tmp/project-equality.html
+
+      - name: Run browser tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
