@@ -23,6 +23,7 @@ The community identifies concerns; research examines evidence; technology tests 
 - [Governance and Participation](GOVERNANCE.md)
 - [AI Application Human Impact Assessment Tool](index.html)
 - [AI Application Impact Assessment Framework](AI_APPLICATION_IMPACT_FRAMEWORK.md)
+- [Worked Test Case: Autonomous Military Agent](test-cases/AUTONOMOUS_MILITARY_AGENT.md)
 - [Website Testing](TESTING.md)
 - [Python policy checklist](project_equality/policy.py)
 
