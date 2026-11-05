@@ -9,7 +9,7 @@
 :root{color-scheme:dark;--bg:#101827;--panel:#192538;--text:#edf2f7;--muted:#aab7c8;--line:#34445b;--accent:#80c7c0}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
 main{width:min(820px,100%);margin:auto;padding:24px 16px 56px}header{padding:20px 0 12px}h1{font-size:2rem;line-height:1.15;margin:0 0 10px}h2{font-size:1.2rem;margin:8px 0 12px}h3{font-size:1rem;margin:18px 0 8px}p,.muted{color:var(--muted)}.principle{font-size:1.08rem;color:var(--text);border-left:4px solid var(--accent);padding:10px 14px;background:var(--panel)}
-section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.modebar{display:flex;gap:10px;flex-wrap:wrap}.modebar button[aria-pressed=true]{outline:2px solid var(--accent);outline-offset:2px}.hidden{display:none!important}section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
 label.field{display:block;margin:12px 0 6px;color:var(--text)}input[type=text],textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0d1725;color:var(--text);font:inherit}
 textarea{min-height:84px;resize:vertical}select{min-height:46px}.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;color:var(--text)}input[type=checkbox]{width:19px;height:19px;margin-top:3px;accent-color:var(--accent)}
 button{border:0;border-radius:9px;padding:12px 16px;margin:8px 8px 0 0;background:var(--accent);color:#10202a;font-weight:700;font-size:1rem}button.secondary{background:#34445b;color:var(--text)}
@@ -18,7 +18,18 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;
 </head>
 <body><main>
 <header><h1>Project Equality</h1><p class="principle"><strong>Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.</strong></p><p><strong>AI Application Human Impact Assessment</strong><br>Explore how an AI application could benefit or harm people before and after deployment. This framework applies to all AI applications; higher-impact uses need deeper scrutiny.</p></header>
-<section>
+<section id="assessmentMode">
+<h2>Choose assessment mode</h2>
+<p>Start with a quick automated screening from your idea, or complete the detailed manual assessment below. You can use both.</p>
+<div class="modebar"><button type="button" id="autoMode" aria-pressed="true">Automated idea screening</button><button type="button" class="secondary" id="manualMode" aria-pressed="false">Manual assessment</button></div>
+<div id="autoPanel">
+<label class="field" for="ideaInput">Describe your AI application idea</label>
+<textarea id="ideaInput" placeholder="Example: An AI agent that screens job applicants, ranks candidates, and automatically rejects low-scoring applications."></textarea>
+<button type="button" id="runAuto">Assess my idea</button>
+<p class="note">Automated screening uses transparent, locally run rules and keyword patterns. It is an initial triage aid—not a generative AI expert, factual verification, legal review, or final risk decision. It may miss context and should be followed by manual assessment.</p>
+</div>
+</section>
+<section id="manualAssessment">
 <h2>1. Describe the AI application</h2>
 <label class="field" for="name">Application or system name</label><input id="name" type="text" placeholder="Example: AI-assisted recruitment platform">
 <label class="field" for="type">Application type</label><select id="type"><option value="">Select a type</option><option>Chatbot or virtual assistant</option><option>Generative AI (text, image, audio, video, code)</option><option>Recommendation or ranking system</option><option>Prediction, scoring, or classification</option><option>Decision-support system</option><option>Automated decision-making system</option><option>AI agent or autonomous system</option><option>Robotics or physical AI</option><option>Monitoring, biometric, or surveillance system</option><option>Other / multiple types</option></select>
@@ -89,7 +100,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;
 <button id="review">Generate human impact report</button><button class="secondary" id="copy">Copy report</button><button class="secondary" id="clear">Clear form</button>
 <pre id="output" aria-live="polite">Your AI application human impact report will appear here.</pre>
 </section>
-<section><h2>Important limitations</h2><small>This is a structured self-assessment aid. It does not inspect models, datasets, source code, security controls, or deployment conditions; independently verify answers; calculate a scientifically validated risk score; or provide legal advice, audit, certification, or a guarantee. It cannot replace domain experts, affected-community consultation, independent evaluation, applicable law, or ongoing human accountability. A high-impact or critical-risk use needs deeper, context-specific assessment before deployment and throughout its lifecycle. Do not enter confidential or sensitive personal information.</small></section>
+</section><section><h2>Important limitations</h2><small>This is a structured self-assessment aid. It does not inspect models, datasets, source code, security controls, or deployment conditions; independently verify answers; calculate a scientifically validated risk score; or provide legal advice, audit, certification, or a guarantee. It cannot replace domain experts, affected-community consultation, independent evaluation, applicable law, or ongoing human accountability. A high-impact or critical-risk use needs deeper, context-specific assessment before deployment and throughout its lifecycle. Do not enter confidential or sensitive personal information.</small></section>
 <p><a href="AI_APPLICATION_IMPACT_FRAMEWORK.md">Framework and methodology</a> · <a href="CONSTITUTION.md">Draft Constitution</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="https://github.com/heirl/project-equality">GitHub repository</a></p>
 </main>
 <script>
@@ -113,5 +124,32 @@ document.getElementById("review").addEventListener("click",()=>{
 });
 document.getElementById("copy").addEventListener("click",async()=>{if(!latest)document.getElementById("review").click();try{await navigator.clipboard.writeText(latest);document.getElementById("copy").textContent="Copied"}catch(e){document.getElementById("output").textContent=latest+"\n\nSelect and copy the report manually."}});
 document.getElementById("clear").addEventListener("click",()=>{document.querySelectorAll("input[type=text],textarea").forEach(x=>x.value="");document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);document.querySelectorAll("select").forEach(x=>x.selectedIndex=0);latest="";document.getElementById("output").textContent="Your AI application human impact report will appear here.";document.getElementById("copy").textContent="Copy report"});
+
+const autoBtn=document.getElementById("autoMode"),manualBtn=document.getElementById("manualMode"),autoPanel=document.getElementById("autoPanel"),manualSection=document.getElementById("manualAssessment");
+function setMode(mode){const isAuto=mode==="auto";autoBtn.setAttribute("aria-pressed",String(isAuto));manualBtn.setAttribute("aria-pressed",String(!isAuto));autoPanel.classList.toggle("hidden",!isAuto);manualSection.classList.toggle("hidden",isAuto);}
+autoBtn.addEventListener("click",()=>setMode("auto"));manualBtn.addEventListener("click",()=>setMode("manual"));
+document.getElementById("runAuto").addEventListener("click",()=>{
+ const idea=document.getElementById("ideaInput").value.trim();
+ if(!idea){document.getElementById("output").textContent="Please describe your AI application idea first.";return;}
+ const text=idea.toLowerCase();
+ const rules=[
+  {name:"Physical safety / health",re:/\b(health|medical|patient|diagnos|treatment|surgery|drug|vehicle|driving|transport|robot|weapon|military|lethal|safety|emergency)\b/,severity:5,reason:"Could affect physical safety or health; errors may cause serious injury or death."},
+  {name:"Rights, fairness, and discrimination",re:/\b(hir(e|ing)|recruit|job|applicant|candidate|school|student|grade|admission|credit|loan|insurance|benefit|polic|judge|criminal|score|rank|reject|eligib)\b/,severity:5,reason:"Could influence access to employment, education, finance, public services, or other opportunities."},
+  {name:"Privacy and surveillance",re:/\b(personal data|private|privacy|biometric|face recognition|facial|surveillance|monitor|track|location|camera|voiceprint)\b/,severity:4,reason:"May collect, infer, or expose sensitive information or enable monitoring."},
+  {name:"Human control and autonomy",re:/\b(autonomous|agent|automatically|automatic|without human|no human|decide|decision|execute|control|approve|reject)\b/,severity:4,reason:"Automation may reduce meaningful human oversight or make consequential actions difficult to reverse."},
+  {name:"Manipulation and psychological wellbeing",re:/\b(companion|therapy|mental|emotion|persuad|influence|addict|child|social media|recommend|personaliz)\b/,severity:4,reason:"Could influence beliefs, behaviour, emotional wellbeing, or vulnerable users."},
+  {name:"Cybersecurity and misuse",re:/\b(agent|api|cyber|security|hack|password|credential|critical infrastructure|code|computer|network|autonomous)\b/,severity:4,reason:"Could be misused, compromised, or cause unintended actions through connected systems."},
+  {name:"Employment and economic effects",re:/\b(job|worker|employee|workforce|replace|automate|salary|income|business|productivity)\b/,severity:3,reason:"May change jobs, working conditions, livelihoods, or distribution of economic benefits."},
+  {name:"Power concentration and dependence",re:/\b(platform|government|mass|population|large scale|essential|infrastructure|monopoly|depend|surveillance)\b/,severity:3,reason:"Could create dependency or concentrate decision-making power."}
+ ];
+ const hits=rules.filter(r=>r.re.test(text));
+ const max=hits.reduce((m,r)=>Math.max(m,r.severity),0);
+ const priority=max>=5?"High-impact / critical-risk expert review":max>=4?"Enhanced review; assess context and safeguards":"Baseline review; clarify purpose, affected people, and foreseeable harms";
+ const lines=["PROJECT EQUALITY — AUTOMATED IDEA SCREENING","Generated: "+new Date().toISOString(),"","IDEA PROVIDED",idea,"","POTENTIAL IMPACT AREAS FLAGGED"];
+ if(hits.length){hits.forEach(h=>lines.push("- "+h.name+" (potential severity "+h.severity+"/5): "+h.reason));}
+ else lines.push("- No predefined risk pattern matched. This does not mean the idea is low-risk or safe; manual review is required.");
+ lines.push("","INITIAL REVIEW PRIORITY",priority,"","IMPORTANT QUESTIONS TO VERIFY","- Who benefits, and who may be harmed—including non-users?","- What decisions or actions can the system take, and how autonomous is it?","- What is the worst credible harm, how likely is it, how many people could be affected, and can it be reversed?","- What evidence supports the claimed benefits and performance?","- Can affected people understand, challenge, and obtain remedy for consequential outcomes?","- Who is accountable, and what happens when the system fails or is compromised?","- What independent testing and ongoing monitoring are required?","","LIMITATIONS","This is a transparent keyword-based preliminary screening, not a full AI model assessment. It does not understand all context, verify claims, inspect code or data, estimate likelihood, or provide legal advice. Severity flags are conservative prompts for investigation, not measured risk scores. Complete the manual assessment and obtain appropriate expert review before consequential deployment.");
+ latest=lines.join("\n");document.getElementById("output").textContent=latest;setMode("auto");
+});
 </script>
 </body></html>
