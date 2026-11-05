@@ -22,6 +22,7 @@ The community identifies concerns; research examines evidence; technology tests 
 - [Research Agenda](RESEARCH_AGENDA.md)
 - [Governance and Participation](GOVERNANCE.md)
 - [Impact Review Tool](index.html)
+- [Website Testing](TESTING.md)
 - [Python policy checklist](project_equality/policy.py)
 
 ## Important limitations
