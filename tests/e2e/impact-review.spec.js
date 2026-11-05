@@ -65,12 +65,38 @@ test("copies the generated human impact report", async ({ page, context }) => {
   expect(clipboardText).toContain("PROJECT EQUALITY — AI APPLICATION HUMAN IMPACT REPORT");
 });
 
-test("automatically screens a user-provided AI idea", async ({ page }) => {
+test("automated mode explains backend setup when no AI service URL is configured", async ({ page }) => {
   await page.getByRole("button", { name: "Automated idea screening" }).click();
-  await page.getByLabel("Describe your AI application idea").fill("An autonomous AI agent screens job applicants and automatically rejects candidates using facial recognition.");
+  await page.getByLabel("Describe your AI application idea").fill("An AI application that ranks job applicants and automatically rejects candidates.");
   await page.getByRole("button", { name: "Assess my idea" }).click();
-  await expect(page.locator("#output")).toContainText("AUTOMATED IDEA SCREENING");
-  await expect(page.locator("#output")).toContainText("Rights, fairness, and discrimination");
-  await expect(page.locator("#output")).toContainText("Privacy and surveillance");
-  await expect(page.locator("#output")).toContainText("LIMITATIONS");
+  await expect(page.locator("#output")).toContainText("AI assessment service is not connected yet");
+  await expect(page.locator("#output")).toContainText("AI_ENGINE_SETUP.md");
+});
+
+test("renders structured AI risk dimensions and a visual severity graph", async ({ page }) => {
+  await page.route("https://assessment.example.workers.dev/api/assess", async route => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      assessment: {
+        application_summary: "AI recruitment screening tool.",
+        intended_benefits: ["Faster processing"],
+        affected_groups: ["Applicants"],
+        risk_dimensions: [{ dimension: "Fairness and discrimination", severity: 5, rationale: "Could exclude qualified applicants.", uncertainty: "No subgroup testing supplied." }],
+        harm_scenarios: ["Unfair rejection"],
+        evidence_gaps: ["Independent bias evaluation"],
+        safeguards: ["Human review and appeal"],
+        review_priority: "High-impact review",
+        priority_reason: "It influences access to employment.",
+        likelihood_assessment: "Unknown; no empirical evidence supplied.",
+        limitations: ["Preliminary screening only."]
+      },
+      meta: { model: "test-model", generated_at: "2026-11-05T00:00:00.000Z" }
+    }) });
+  });
+  await page.getByRole("button", { name: "Automated idea screening" }).click();
+  await page.getByLabel("AI assessment service URL (required for AI-powered analysis)").fill("https://assessment.example.workers.dev");
+  await page.getByLabel("Describe your AI application idea").fill("An AI application that ranks job applicants and automatically rejects candidates.");
+  await page.getByRole("button", { name: "Assess my idea" }).click();
+  await expect(page.locator("#output")).toContainText("AI-POWERED HUMAN IMPACT ASSESSMENT");
+  await expect(page.locator("#output")).toContainText("High-impact review");
+  await expect(page.locator("#riskGraph")).toContainText("Fairness and discrimination — 5/5");
 });
