@@ -1,21 +1,26 @@
 # Project Equality
 
-A practical, evolving framework for equal, ethical human–AI coexistence.
+A practical, evolving initiative for equal, ethical human–AI coexistence.
 
-## Founding principle
+**Founding principle:** Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.
 
-**Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.**
+## Our vision
 
-## What this project is
+Project Equality is being developed as three connected pillars:
 
-Project Equality is an early-stage principles and experimentation project exploring dignity, non-domination, fairness, accountability, transparency, safety, and cooperation between humans and AI.
+1. **Movement** — bring people together for public dialogue, participation, and constructive criticism.
+2. **Research** — investigate ethical, social, technical, and governance questions through evidence-led work.
+3. **Technology** — build accessible, transparent tools that help people identify risks and improve safeguards.
 
-It is a place to turn a shared principle into practical questions, safeguards, and testable tools.
+The community identifies concerns; research examines evidence; technology tests practical responses; and the results return to the community for review.
 
 ## Start here
 
+- [Vision and Operating Model](VISION_AND_MODEL.md)
 - [Draft Constitution](CONSTITUTION.md)
 - [Roadmap](ROADMAP.md)
+- [Research Agenda](RESEARCH_AGENDA.md)
+- [Governance and Participation](GOVERNANCE.md)
 - [Impact Review Tool](index.html)
 - [Python policy checklist](project_equality/policy.py)
 
@@ -27,7 +32,7 @@ The review tool is a prompt-based checklist, not an audit, legal opinion, certif
 
 ## Contributing
 
-Share specific proposals, evidence, affected parties, risks, and practical safeguards. Be respectful of disagreement. Do not publish personal, confidential, or sensitive information.
+Share specific proposals, evidence, affected parties, risks, and practical safeguards. Be respectful of disagreement. Do not publish personal, confidential, or sensitive information. Read the governance and participation principles before contributing.
 
 ## Run the Python checklist
 
