@@ -5,68 +5,61 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Project Equality" })).toBeVisible();
 });
 
-test("loads the impact review page and its key sections", async ({ page }) => {
-  await expect(page.getByRole("heading", { name: "Proposal" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Impact and safeguards" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Important limitation" })).toBeVisible();
-  await expect(page.getByLabel("Proposal or system name")).toBeVisible();
-  await expect(page.getByLabel("Purpose and intended use")).toBeVisible();
+test("loads the AI application human impact assessment", async ({ page }) => {
+  await expect(page.getByRole("heading", { name: "1. Describe the AI application" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "2. Potential benefits" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "3. Potential harms and risk areas" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "4. Scale, severity, and exposure" })).toBeVisible();
+  await expect(page.getByLabel("Application or system name")).toBeVisible();
+  await expect(page.getByLabel("Application type")).toBeVisible();
 });
 
-test("generates review notes from selected risk flags", async ({ page }) => {
-  await page.getByLabel("Proposal or system name").fill("AI Recruitment System");
-  await page.getByLabel("Purpose and intended use").fill(
-    "Automatically shortlist job applicants using AI."
-  );
-
-  await page.getByLabel("This proposal affects people or their opportunities.").check();
-  await page.getByLabel(
-    "It may affect health, safety, rights, employment, education, finances, or access to essential services."
-  ).check();
-  await page.getByLabel("It uses personal or sensitive data.").check();
-  await page.getByLabel("There may be discrimination or unequal impact.").check();
-  await page.getByLabel("There is no clear appeal or human review process.").check();
-
-  await page.getByRole("button", { name: "Generate review notes" }).click();
+test("generates a report covering benefits, harms, and review priorities", async ({ page }) => {
+  await page.getByLabel("Application or system name").fill("AI Recruitment System");
+  await page.getByLabel("Application type").selectOption("Automated decision-making system");
+  await page.getByLabel("Purpose and intended use").fill("Screens and ranks job applicants.");
+  await page.getByLabel("Who will use it, and who may be affected (including non-users)?").fill("Applicants, recruiters, hiring managers.");
+  await page.getByLabel("Level of automation").selectOption("Makes or executes consequential decisions with little/no human review");
+  await page.getByLabel("Improves access, inclusion, or accessibility").check();
+  await page.getByLabel("Bias, discrimination, or unequal outcomes").check();
+  await page.getByLabel("Unfair decisions or lack of appeal").check();
+  await page.getByLabel("Worst credible harm severity").selectOption("High — serious impact on health, livelihood, rights, or opportunities");
+  await page.getByLabel("Could it affect health, safety, fundamental rights, employment, education, finances, housing, or essential services?").selectOption("yes");
+  await page.getByRole("button", { name: "Generate human impact report" }).click();
 
   const output = page.locator("#output");
-  await expect(output).toContainText("PROJECT EQUALITY — IMPACT REVIEW");
+  await expect(output).toContainText("PROJECT EQUALITY — AI APPLICATION HUMAN IMPACT REPORT");
   await expect(output).toContainText("AI Recruitment System");
-  await expect(output).toContainText("Require proportionate expert review");
-  await expect(output).toContainText("Minimize data");
-  await expect(output).toContainText("Test outcomes across relevant groups");
-  await expect(output).toContainText("Create an accessible appeal path");
+  await expect(output).toContainText("Improves access, inclusion, or accessibility");
+  await expect(output).toContainText("Bias, discrimination, or unequal outcomes");
+  await expect(output).toContainText("Do not rely on this self-assessment");
   await expect(output).toContainText("Self-assessment only");
 });
 
-test("warns when no risk flags are selected", async ({ page }) => {
-  await page.getByRole("button", { name: "Generate review notes" }).click();
-  await expect(page.locator("#output")).toContainText(
-    "No risk flags selected. This does not establish that the proposal is safe."
-  );
+test("does not treat an empty risk checklist as proof of safety", async ({ page }) => {
+  await page.getByRole("button", { name: "Generate human impact report" }).click();
+  await expect(page.locator("#output")).toContainText("No risk areas selected. This is not evidence that the application is safe.");
+  await expect(page.locator("#output")).toContainText("an empty checklist does not demonstrate absence of harm");
 });
 
-test("clears entered values, selected flags, and generated notes", async ({ page }) => {
-  await page.getByLabel("Proposal or system name").fill("Temporary proposal");
-  await page.getByLabel("This proposal affects people or their opportunities.").check();
-  await page.getByRole("button", { name: "Generate review notes" }).click();
-  await expect(page.locator("#output")).toContainText("Temporary proposal");
-
-  await page.getByRole("button", { name: "Clear" }).click();
-
-  await expect(page.getByLabel("Proposal or system name")).toHaveValue("");
-  await expect(page.getByLabel("This proposal affects people or their opportunities.")).not.toBeChecked();
-  await expect(page.locator("#output")).toHaveText("Your review notes will appear here.");
+test("clears entered values, selections, and generated report", async ({ page }) => {
+  await page.getByLabel("Application or system name").fill("Temporary AI system");
+  await page.getByLabel("Bias, discrimination, or unequal outcomes").check();
+  await page.getByRole("button", { name: "Generate human impact report" }).click();
+  await expect(page.locator("#output")).toContainText("Temporary AI system");
+  await page.getByRole("button", { name: "Clear form" }).click();
+  await expect(page.getByLabel("Application or system name")).toHaveValue("");
+  await expect(page.getByLabel("Bias, discrimination, or unequal outcomes")).not.toBeChecked();
+  await expect(page.locator("#output")).toHaveText("Your AI application human impact report will appear here.");
 });
 
-test("copies generated review notes to the clipboard", async ({ page, context }) => {
+test("copies the generated human impact report", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.getByLabel("Proposal or system name").fill("Clipboard test");
-  await page.getByRole("button", { name: "Generate review notes" }).click();
-  await page.getByRole("button", { name: "Copy notes" }).click();
-
+  await page.getByLabel("Application or system name").fill("Clipboard test");
+  await page.getByRole("button", { name: "Generate human impact report" }).click();
+  await page.getByRole("button", { name: "Copy report" }).click();
   await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
   const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
   expect(clipboardText).toContain("Clipboard test");
-  expect(clipboardText).toContain("PROJECT EQUALITY — IMPACT REVIEW");
+  expect(clipboardText).toContain("PROJECT EQUALITY — AI APPLICATION HUMAN IMPACT REPORT");
 });
