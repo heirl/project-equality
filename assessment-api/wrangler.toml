@@ -1,0 +1,7 @@
+name = "project-equality-assessment"
+main = "worker.js"
+compatibility_date = "2026-11-05"
+
+[vars]
+ALLOWED_ORIGIN = "https://heirl.github.io"
+OPENAI_MODEL = "gpt-6-astra"
