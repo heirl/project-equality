@@ -21,7 +21,8 @@ The community identifies concerns; research examines evidence; technology tests 
 - [Roadmap](ROADMAP.md)
 - [Research Agenda](RESEARCH_AGENDA.md)
 - [Governance and Participation](GOVERNANCE.md)
-- [Impact Review Tool](index.html)
+- [AI Application Human Impact Assessment Tool](index.html)
+- [AI Application Impact Assessment Framework](AI_APPLICATION_IMPACT_FRAMEWORK.md)
 - [Website Testing](TESTING.md)
 - [Python policy checklist](project_equality/policy.py)
 
