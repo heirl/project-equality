@@ -4,59 +4,114 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101827">
-<title>Project Equality — Impact Review</title>
+<title>Project Equality — AI Application Human Impact Assessment</title>
 <style>
 :root{color-scheme:dark;--bg:#101827;--panel:#192538;--text:#edf2f7;--muted:#aab7c8;--line:#34445b;--accent:#80c7c0}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
-main{width:min(760px,100%);margin:auto;padding:24px 16px 56px}header{padding:20px 0 12px}h1{font-size:2rem;line-height:1.15;margin:0 0 10px}h2{font-size:1.25rem;margin:26px 0 10px}p{color:var(--muted)}.principle{font-size:1.12rem;color:var(--text);border-left:4px solid var(--accent);padding:10px 14px;background:var(--panel)}
+main{width:min(820px,100%);margin:auto;padding:24px 16px 56px}header{padding:20px 0 12px}h1{font-size:2rem;line-height:1.15;margin:0 0 10px}h2{font-size:1.2rem;margin:8px 0 12px}h3{font-size:1rem;margin:18px 0 8px}p,.muted{color:var(--muted)}.principle{font-size:1.08rem;color:var(--text);border-left:4px solid var(--accent);padding:10px 14px;background:var(--panel)}
 section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
-label.field{display:block;margin:12px 0 6px;color:var(--text)}input[type=text],textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0d1725;color:var(--text);font:inherit}
-textarea{min-height:90px;resize:vertical}.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;color:var(--text)}input[type=checkbox]{width:19px;height:19px;margin-top:3px;accent-color:var(--accent)}
+label.field{display:block;margin:12px 0 6px;color:var(--text)}input[type=text],textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0d1725;color:var(--text);font:inherit}
+textarea{min-height:84px;resize:vertical}select{min-height:46px}.check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;color:var(--text)}input[type=checkbox]{width:19px;height:19px;margin-top:3px;accent-color:var(--accent)}
 button{border:0;border-radius:9px;padding:12px 16px;margin:8px 8px 0 0;background:var(--accent);color:#10202a;font-weight:700;font-size:1rem}button.secondary{background:#34445b;color:var(--text)}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;border-radius:10px;color:var(--text)}a{color:var(--accent)}small{color:var(--muted)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1420;padding:14px;border-radius:10px;color:var(--text)}a{color:var(--accent)}small{color:var(--muted)}.note{border:1px solid var(--line);padding:12px;border-radius:9px;color:var(--muted)}
 </style>
 </head>
 <body><main>
-<header><h1>Project Equality</h1><p class="principle"><strong>Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.</strong></p><p>A simple reflection checklist for identifying questions and safeguards before deploying a technology or AI proposal.</p></header>
+<header><h1>Project Equality</h1><p class="principle"><strong>Do not pursue supremacy. Treat everyone with dignity. Build cooperation without domination.</strong></p><p><strong>AI Application Human Impact Assessment</strong><br>Explore how an AI application could benefit or harm people before and after deployment. This framework applies to all AI applications; higher-impact uses need deeper scrutiny.</p></header>
 <section>
-<h2>Proposal</h2>
-<label class="field" for="name">Proposal or system name</label><input id="name" type="text" placeholder="Example: AI-assisted application screening">
-<label class="field" for="purpose">Purpose and intended use</label><textarea id="purpose" placeholder="What will it do, and who may be affected?"></textarea>
+<h2>1. Describe the AI application</h2>
+<label class="field" for="name">Application or system name</label><input id="name" type="text" placeholder="Example: AI-assisted recruitment platform">
+<label class="field" for="type">Application type</label><select id="type"><option value="">Select a type</option><option>Chatbot or virtual assistant</option><option>Generative AI (text, image, audio, video, code)</option><option>Recommendation or ranking system</option><option>Prediction, scoring, or classification</option><option>Decision-support system</option><option>Automated decision-making system</option><option>AI agent or autonomous system</option><option>Robotics or physical AI</option><option>Monitoring, biometric, or surveillance system</option><option>Other / multiple types</option></select>
+<label class="field" for="purpose">Purpose and intended use</label><textarea id="purpose" placeholder="What does it do? What problem is it intended to solve?"></textarea>
+<label class="field" for="users">Who will use it, and who may be affected (including non-users)?</label><textarea id="users" placeholder="Customers, workers, patients, students, applicants, communities, bystanders..."></textarea>
+<label class="field" for="autonomy">Level of automation</label><select id="autonomy"><option value="">Select the closest description</option><option>Provides information or suggestions only</option><option>Recommends or ranks options; a person decides</option><option>Prepares actions for human approval</option><option>Takes actions automatically within defined limits</option><option>Makes or executes consequential decisions with little/no human review</option></select>
 </section>
-<section><h2>Impact and safeguards</h2>
-<div id="checks">
-<label class="check"><input type="checkbox" data-key="impacts_people"> This proposal affects people or their opportunities.</label>
-<label class="check"><input type="checkbox" data-key="high_impact"> It may affect health, safety, rights, employment, education, finances, or access to essential services.</label>
-<label class="check"><input type="checkbox" data-key="sensitive_data"> It uses personal or sensitive data.</label>
-<label class="check"><input type="checkbox" data-key="no_appeal"> There is no clear appeal or human review process.</label>
-<label class="check"><input type="checkbox" data-key="no_accountability"> No accountable human or institution has been identified.</label>
-<label class="check"><input type="checkbox" data-key="no_explanation"> Affected people may not receive an understandable explanation.</label>
-<label class="check"><input type="checkbox" data-key="bias_risk"> There may be discrimination or unequal impact.</label>
-<label class="check"><input type="checkbox" data-key="coercion_risk"> It may manipulate, pressure, or coerce people.</label>
-<label class="check"><input type="checkbox" data-key="power_concentration"> It may concentrate power without adequate oversight.</label>
+<section>
+<h2>2. Potential benefits</h2><p>Select plausible benefits; add evidence rather than assuming they will occur.</p>
+<div id="benefits">
+<label class="check"><input type="checkbox" value="Improves access, inclusion, or accessibility"> Improves access, inclusion, or accessibility</label>
+<label class="check"><input type="checkbox" value="Improves health, safety, or wellbeing"> Improves health, safety, or wellbeing</label>
+<label class="check"><input type="checkbox" value="Improves education, knowledge, or skills"> Improves education, knowledge, or skills</label>
+<label class="check"><input type="checkbox" value="Saves time or reduces cost and workload"> Saves time or reduces cost and workload</label>
+<label class="check"><input type="checkbox" value="Improves quality, accuracy, or consistency"> Improves quality, accuracy, or consistency</label>
+<label class="check"><input type="checkbox" value="Supports creativity, research, or innovation"> Supports creativity, research, or innovation</label>
+<label class="check"><input type="checkbox" value="Supports better decisions or public services"> Supports better decisions or public services</label>
+<label class="check"><input type="checkbox" value="Creates jobs, skills, or economic opportunity"> Creates jobs, skills, or economic opportunity</label>
 </div>
-<label class="field" for="evidence">Evidence, uncertainties, and affected groups</label><textarea id="evidence" placeholder="What do you know? What remains uncertain?"></textarea>
-<label class="field" for="safeguards">Safeguards already planned</label><textarea id="safeguards" placeholder="Human review, access controls, testing, appeals, monitoring..."></textarea>
-<button id="review">Generate review notes</button><button class="secondary" id="copy">Copy notes</button><button class="secondary" id="clear">Clear</button>
-<pre id="output" aria-live="polite">Your review notes will appear here.</pre>
+<label class="field" for="benefitEvidence">Who receives these benefits, and what evidence supports them?</label><textarea id="benefitEvidence" placeholder="Identify beneficiaries, evidence, assumptions, and who may not benefit."></textarea>
 </section>
-<section><h2>Important limitation</h2><small>This is a self-assessment prompt, not an audit, certification, legal opinion, or guarantee. It cannot inspect a system or verify answers. High-impact proposals need qualified human review and appropriate independent scrutiny. Do not enter confidential or sensitive personal information.</small></section>
-<p><a href="CONSTITUTION.md">Draft Constitution</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="https://github.com/heirl/project-equality">GitHub repository</a></p>
+<section>
+<h2>3. Potential harms and risk areas</h2><p>Select every area that could plausibly arise. Selection means “investigate this”, not “harm is proven”.</p>
+<div id="risks">
+<label class="check"><input type="checkbox" value="Physical health or safety harm"> Physical health or safety harm</label>
+<label class="check"><input type="checkbox" value="Psychological, emotional, or wellbeing harm"> Psychological, emotional, or wellbeing harm</label>
+<label class="check"><input type="checkbox" value="Bias, discrimination, or unequal outcomes"> Bias, discrimination, or unequal outcomes</label>
+<label class="check"><input type="checkbox" value="Privacy loss, data misuse, or surveillance"> Privacy loss, data misuse, or surveillance</label>
+<label class="check"><input type="checkbox" value="Misinformation, deception, or lack of transparency"> Misinformation, deception, or lack of transparency</label>
+<label class="check"><input type="checkbox" value="Manipulation, coercion, or loss of autonomy"> Manipulation, coercion, or loss of autonomy</label>
+<label class="check"><input type="checkbox" value="Unfair decisions or lack of appeal"> Unfair decisions or lack of appeal</label>
+<label class="check"><input type="checkbox" value="Cybersecurity compromise or malicious misuse"> Cybersecurity compromise or malicious misuse</label>
+<label class="check"><input type="checkbox" value="Employment, livelihood, or economic harm"> Employment, livelihood, or economic harm</label>
+<label class="check"><input type="checkbox" value="Environmental or resource impact"> Environmental or resource impact</label>
+<label class="check"><input type="checkbox" value="Concentration of power or systemic dependence"> Concentration of power or systemic dependence</label>
+<label class="check"><input type="checkbox" value="Errors, unreliability, or automation overreliance"> Errors, unreliability, or automation overreliance</label>
+</div>
+<label class="field" for="harmDetails">Describe plausible harm scenarios</label><textarea id="harmDetails" placeholder="What could go wrong, to whom, under what conditions? Include misuse and foreseeable failure modes."></textarea>
+</section>
+<section>
+<h2>4. Scale, severity, and exposure</h2>
+<label class="field" for="severity">Worst credible harm severity</label><select id="severity"><option value="">Not assessed</option><option>Low — inconvenience or minor, reversible impact</option><option>Moderate — meaningful but generally limited or reversible impact</option><option>High — serious impact on health, livelihood, rights, or opportunities</option><option>Critical — death, severe injury, major rights violations, or widespread irreversible harm could occur</option></select>
+<label class="field" for="likelihood">Likelihood of the identified harm</label><select id="likelihood"><option value="">Not assessed</option><option>Unlikely — requires unusual conditions</option><option>Possible — plausible under foreseeable conditions</option><option>Likely — expected to occur in normal or repeated use</option><option>Already observed — evidence indicates it has occurred</option><option>Unknown — insufficient evidence</option></select>
+<label class="field" for="reach">Potential reach</label><select id="reach"><option value="">Not assessed</option><option>Limited — small number of people</option><option>Organisational — a workforce, customer base, or institution</option><option>Large — many communities or a substantial population</option><option>Widespread — cross-region, national, or global scale</option><option>Unknown</option></select>
+<label class="field" for="duration">Duration and reversibility</label><select id="duration"><option value="">Not assessed</option><option>Short-term and readily reversible</option><option>Long-lasting but potentially reversible</option><option>Hard to reverse or potentially permanent</option><option>Unknown</option></select>
+<label class="field" for="highImpact">Could it affect health, safety, fundamental rights, employment, education, finances, housing, or essential services?</label><select id="highImpact"><option value="">Not assessed</option><option value="yes">Yes</option><option value="no">No, based on current intended use</option><option value="unknown">Unclear / use may expand</option></select>
+</section>
+<section>
+<h2>5. Human control and safeguards</h2>
+<div id="controls">
+<label class="check"><input type="checkbox" value="People are told when they are interacting with AI or subject to AI-supported decisions"> People are told when they interact with AI or are subject to AI-supported decisions</label>
+<label class="check"><input type="checkbox" value="Meaningful human oversight exists for consequential decisions"> Meaningful human oversight exists for consequential decisions</label>
+<label class="check"><input type="checkbox" value="Affected people can challenge decisions and obtain remedy"> Affected people can challenge decisions and obtain remedy</label>
+<label class="check"><input type="checkbox" value="Data collection is limited, protected, and purpose-bound"> Data collection is limited, protected, and purpose-bound</label>
+<label class="check"><input type="checkbox" value="Testing addresses accuracy, bias, robustness, and foreseeable misuse"> Testing addresses accuracy, bias, robustness, and foreseeable misuse</label>
+<label class="check"><input type="checkbox" value="Incidents are monitored, reported, and corrected"> Incidents are monitored, reported, and corrected</label>
+<label class="check"><input type="checkbox" value="A named person or organisation is accountable"> A named person or organisation is accountable</label>
+<label class="check"><input type="checkbox" value="A safe fallback, pause, or shutdown process exists"> A safe fallback, pause, or shutdown process exists</label>
+</div>
+<label class="field" for="gaps">What safeguards are missing or not yet verified?</label><textarea id="gaps" placeholder="List gaps, owners, and target dates."></textarea>
+</section>
+<section>
+<h2>6. Lifecycle and evidence</h2>
+<label class="field" for="stage">Current lifecycle stage</label><select id="stage"><option>Concept / proposal</option><option>Design and development</option><option>Testing / pilot</option><option>Deployed / in use</option><option>Major update or expansion</option><option>Retirement / discontinued</option></select>
+<label class="field" for="evidence">Evidence, tests, incidents, assumptions, and uncertainties</label><textarea id="evidence" placeholder="Summarise test results, affected-group consultation, incident reports, limitations, and unknowns."></textarea>
+<label class="field" for="monitoring">How will impacts be monitored after deployment?</label><textarea id="monitoring" placeholder="Metrics, feedback channels, review frequency, incident escalation, rollback criteria..."></textarea>
+<div class="note">The report separates selected concerns from verified findings. Empty or unknown answers are evidence gaps, not proof of safety.</div>
+<button id="review">Generate human impact report</button><button class="secondary" id="copy">Copy report</button><button class="secondary" id="clear">Clear form</button>
+<pre id="output" aria-live="polite">Your AI application human impact report will appear here.</pre>
+</section>
+<section><h2>Important limitations</h2><small>This is a structured self-assessment aid. It does not inspect models, datasets, source code, security controls, or deployment conditions; independently verify answers; calculate a scientifically validated risk score; or provide legal advice, audit, certification, or a guarantee. It cannot replace domain experts, affected-community consultation, independent evaluation, applicable law, or ongoing human accountability. A high-impact or critical-risk use needs deeper, context-specific assessment before deployment and throughout its lifecycle. Do not enter confidential or sensitive personal information.</small></section>
+<p><a href="AI_APPLICATION_IMPACT_FRAMEWORK.md">Framework and methodology</a> · <a href="CONSTITUTION.md">Draft Constitution</a> · <a href="ROADMAP.md">Roadmap</a> · <a href="https://github.com/heirl/project-equality">GitHub repository</a></p>
 </main>
 <script>
-const prompts={impacts_people:"Identify affected people and consult them.",high_impact:"Require proportionate expert review, testing, monitoring, and documented approval.",sensitive_data:"Minimize data, define lawful purpose and retention, and apply strong access controls.",no_appeal:"Create an accessible appeal path and meaningful human review.",no_accountability:"Name an accountable owner and decision-making institution.",no_explanation:"Provide understandable notices and explanations appropriate to the use.",bias_risk:"Test outcomes across relevant groups and mitigate unjustified disparities.",coercion_risk:"Assess consent, user autonomy, manipulation, and alternatives.",power_concentration:"Add oversight, limits, transparency, and checks against unilateral control."};
 let latest="";
+const selected=id=>[...document.querySelectorAll("#"+id+" input:checked")].map(x=>x.value);
+const val=id=>document.getElementById(id).value.trim()||"Not provided";
 document.getElementById("review").addEventListener("click",()=>{
- const name=document.getElementById("name").value.trim()||"Unnamed proposal";
- const purpose=document.getElementById("purpose").value.trim()||"Not supplied";
- const flagged=[...document.querySelectorAll("[data-key]:checked")].map(x=>x.dataset.key);
- const lines=["PROJECT EQUALITY — IMPACT REVIEW","Proposal: "+name,"Purpose: "+purpose,"","AREAS TO REVIEW"];
- if(!flagged.length) lines.push("No risk flags selected. This does not establish that the proposal is safe.");
- else flagged.forEach(k=>lines.push("- "+prompts[k]));
- lines.push("","EVIDENCE / UNCERTAINTIES",document.getElementById("evidence").value.trim()||"Not supplied","", "EXISTING SAFEGUARDS",document.getElementById("safeguards").value.trim()||"Not supplied","","LIMITATION: Self-assessment only; not an audit, certification, legal opinion, or guarantee. Human accountability remains essential.");
+ const benefits=selected("benefits"),risks=selected("risks"),controls=selected("controls");
+ const lines=["PROJECT EQUALITY — AI APPLICATION HUMAN IMPACT REPORT","Generated: "+new Date().toISOString(),"","APPLICATION PROFILE","Name: "+val("name"),"Type: "+val("type"),"Purpose: "+val("purpose"),"Users and affected people: "+val("users"),"Automation level: "+val("autonomy"),"Lifecycle stage: "+val("stage"),"","POTENTIAL BENEFITS",...(benefits.length?benefits.map(x=>"- "+x):["No benefits selected; investigate intended and unintended benefits."]),"Benefit evidence: "+val("benefitEvidence"),"","POTENTIAL HARMS / AREAS TO INVESTIGATE",...(risks.length?risks.map(x=>"- "+x):["No risk areas selected. This is not evidence that the application is safe."]),"Harm scenarios: "+val("harmDetails"),"","SCALE AND EXPOSURE","Worst credible severity: "+val("severity"),"Likelihood: "+val("likelihood"),"Potential reach: "+val("reach"),"Duration / reversibility: "+val("duration"),"High-impact domain: "+val("highImpact"),"","SELECTED SAFEGUARDS (self-reported)",...(controls.length?controls.map(x=>"- "+x):["No safeguards selected; verify baseline controls."]),"Safeguard gaps: "+val("gaps"),"","LIFECYCLE EVIDENCE AND MONITORING","Evidence and uncertainties: "+val("evidence"),"Monitoring plan: "+val("monitoring"),"","REVIEW PRIORITIES"];
+ const priorities=[];
+ if(document.getElementById("highImpact").value!=="no")priorities.push("Treat as potentially high-impact until scope and affected people are established; obtain domain-specific expert review.");
+ if(["High — serious impact on health, livelihood, rights, or opportunities","Critical — death, severe injury, major rights violations, or widespread irreversible harm could occur"].includes(document.getElementById("severity").value))priorities.push("Do not rely on this self-assessment: commission deeper independent evaluation and document deployment approval.");
+ if(document.getElementById("likelihood").value==="Unknown"||document.getElementById("severity").value==="Not assessed"||document.getElementById("reach").value==="Not assessed")priorities.push("Resolve material uncertainty about severity, likelihood, and reach before deployment.");
+ if(!controls.some(x=>x.includes("accountable")))priorities.push("Identify a named accountable person or organisation.");
+ if(!controls.some(x=>x.includes("challenge")))priorities.push("For consequential outcomes, establish accessible challenge, appeal, and remedy.");
+ if(!controls.some(x=>x.includes("oversight")))priorities.push("Define meaningful human oversight proportionate to the consequences.");
+ if(!risks.length)priorities.push("Revisit the risk questions with affected people; an empty checklist does not demonstrate absence of harm.");
+ lines.push(...(priorities.length?priorities.map(x=>"- "+x):["- Continue lifecycle monitoring and periodically reassess as use, scale, and context change."]));
+ lines.push("","LIMITATION","Self-assessment only. Selected items are prompts for investigation, not verified findings. No numeric risk score, approval, certification, or guarantee is produced. Obtain appropriate expert and independent review for consequential uses. Human accountability remains essential.");
  latest=lines.join("\n");document.getElementById("output").textContent=latest;
 });
-document.getElementById("copy").addEventListener("click",async()=>{if(!latest){document.getElementById("review").click()}try{await navigator.clipboard.writeText(latest);document.getElementById("copy").textContent="Copied"}catch(e){document.getElementById("output").textContent=latest+"\n\nSelect and copy the notes manually."}});
-document.getElementById("clear").addEventListener("click",()=>{document.querySelectorAll("input[type=text],textarea").forEach(x=>x.value="");document.querySelectorAll("[data-key]").forEach(x=>x.checked=false);latest="";document.getElementById("output").textContent="Your review notes will appear here.";document.getElementById("copy").textContent="Copy notes"});
-</script>  <!-- GitHub Pages redeploy trigger -->
+document.getElementById("copy").addEventListener("click",async()=>{if(!latest)document.getElementById("review").click();try{await navigator.clipboard.writeText(latest);document.getElementById("copy").textContent="Copied"}catch(e){document.getElementById("output").textContent=latest+"\n\nSelect and copy the report manually."}});
+document.getElementById("clear").addEventListener("click",()=>{document.querySelectorAll("input[type=text],textarea").forEach(x=>x.value="");document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);document.querySelectorAll("select").forEach(x=>x.selectedIndex=0);latest="";document.getElementById("output").textContent="Your AI application human impact report will appear here.";document.getElementById("copy").textContent="Copy report"});
+</script>
 </body></html>
