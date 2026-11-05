@@ -2,6 +2,7 @@
 
 This module is a checklist, not an audit, certification, or guarantee.
 """
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 
 PROMPTS = {
@@ -41,11 +42,23 @@ class Review:
 
 
 def review(answers: dict[str, bool]) -> Review:
-    """Evaluate supplied boolean answers; True means the concern is present."""
+    """Evaluate boolean answers; True means the concern is present.
+
+    Omitted prompts remain unverified. Non-boolean answers are rejected so
+    values such as the string "false" cannot accidentally be treated as True.
+    """
+    if not isinstance(answers, Mapping):
+        raise TypeError("answers must be a mapping of review keys to booleans")
+
     unknown = set(answers) - set(PROMPTS)
     if unknown:
         raise ValueError(f"Unknown review keys: {', '.join(sorted(unknown))}")
-    flagged = [key for key, value in answers.items() if value]
+
+    invalid = [key for key, value in answers.items() if type(value) is not bool]
+    if invalid:
+        raise TypeError(f"Answers must be booleans: {', '.join(sorted(invalid))}")
+
+    flagged = [key for key in PROMPTS if answers.get(key) is True]
     missing = [key for key in PROMPTS if key not in answers]
-    safeguards = [SAFEGUARDS[key] for key in flagged if key in SAFEGUARDS]
+    safeguards = [SAFEGUARDS[key] for key in flagged]
     return Review(flagged, missing, safeguards)
